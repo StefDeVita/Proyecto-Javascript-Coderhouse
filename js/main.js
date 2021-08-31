@@ -63,14 +63,16 @@ const carrito = new Carrito();
 //Añade a una tabla el producto que se añadio al carrito
 function agregarCarrito(nombre){
     const producto = productos.find(producto => producto.nombre === nombre);
-    carrito.aniadirProducto(producto);
-    let tabla = ``;
     if(carrito.estaVacio()){
+        let tabla = ``;
         tabla += `<tr>
         <th>Nombre </th>
         <th>Valor </th>
-    </tr>`
+    </tr>`;
+    document.getElementById("carrito").innerHTML += tabla;
     }
+    carrito.aniadirProducto(producto);
+    let tabla = ``;
     tabla += `<tr>
     <td>${producto.nombre}</td>
     <td>${producto.precio}</td>
