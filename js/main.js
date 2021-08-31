@@ -4,6 +4,9 @@ class Carrito{
     constructor(){
         this.productos = [];
     }
+    estaVacio(){
+        return this.productos.length === 0;
+    }
     aniadirProducto(producto){
         this.productos.push(producto);
     }
@@ -32,10 +35,11 @@ class Carrito{
 }
 class Producto{
 
-    constructor(nombre,precio,cantCuotas){
+    constructor(nombre,precio,cantCuotas,imagen){
         this.nombre = nombre;
         this.precio = Number(precio);
         this.cantCuotas = cantCuotas;
+        this.imagen = imagen;
     }
     calcularPrecioEnCuotas(){
         let interes = (this.precio * INTERESMENSUAL)/ 100;
@@ -51,19 +55,39 @@ class Producto{
     }
 
 }
+const jujutsu = new Producto("Jujutsu Kaisen Volumen 1",500,1,"/img/jujutsu.webp");
+const haikyu = new Producto("Haikyu!! Volumen 1",500,1,"/img/haikyu.jpg");
+const sincity = new Producto("Sin City Volumen 1",1000,1,"/img/sincity.jpg");
+const productos = [jujutsu,haikyu,sincity];
 const carrito = new Carrito();
-let seguir = true;
-while(true){
-    let nombre = prompt("Ingrese el nombre del producto a pagar en cuotas o esc para salir");
-    if(nombre.toUpperCase() == "ESC"){
-        break;
-    }
-    let precio = prompt("Ingrese el precio de este producto");
-    let cantCuotas = prompt("¿En cuantas cuotas desea pagar?");
-    const producto = new Producto(nombre,precio,cantCuotas);
+function agregarCarrito(nombre){
+    const producto = productos.find(producto => producto.nombre === nombre);
     carrito.aniadirProducto(producto);
-    alert(`Por el producto ${producto.nombre} usted debera abonar por mes ${producto.calcularPrecioEnCuotas()} pesos y el precio final del producto sera de ${producto.calcularPrecioFinal()} pesos, el CFT de la transaccion sera del ${producto.costoFinancieroTotal()}%`);
-    alert(`El producto fue agregado al carrito que cuenta con los siguientes productos ${carrito.mostrarProductosOrdenados()}`)
-
+    let tabla = ``;
+    if(carrito.estaVacio()){
+        tabla += `<tr>
+        <th>Nombre </th>
+        <th>Valor </th>
+    </tr>`
+    }
+    tabla += `<tr>
+    <td>${producto.nombre}</td>
+    <td>${producto.precio}</td>
+  </tr>`
+    document.getElementById("carrito").innerHTML += tabla;
 }
-
+let acumulador = ``;
+productos.forEach((producto)=>{
+    acumulador += `<div class="card">
+    <img class="card-img-top img-fluid" src="${producto.imagen}" alt="${producto.nombre}">
+    <div class="card-body">
+      <h5 class="card-title">${producto.nombre}</h5>
+      <p class="card-text">$${producto.precio}</p>
+    </div>
+    
+    <div class="card-body text-center">
+      <button class="btn" onclick="agregarCarrito('${producto.nombre}')">Agregar al carrito</button>
+    </div>
+</div>`
+})
+document.getElementById("listaProductos").innerHTML = acumulador;
