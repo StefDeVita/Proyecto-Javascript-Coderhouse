@@ -60,6 +60,7 @@ const haikyu = new Producto("Haikyu!! Volumen 1",500,1,"/img/haikyu.jpg");
 const sincity = new Producto("Sin City Volumen 1",1000,1,"/img/sincity.jpg");
 const productos = [jujutsu,haikyu,sincity];
 const carrito = new Carrito();
+//Añade a una tabla el producto que se añadio al carrito
 function agregarCarrito(nombre){
     const producto = productos.find(producto => producto.nombre === nombre);
     carrito.aniadirProducto(producto);
@@ -76,6 +77,7 @@ function agregarCarrito(nombre){
   </tr>`
     document.getElementById("carrito").innerHTML += tabla;
 }
+//Se crean los productos
 let acumulador = ``;
 productos.forEach((producto)=>{
     acumulador += `<div class="card">
