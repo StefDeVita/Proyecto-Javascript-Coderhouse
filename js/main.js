@@ -3,12 +3,27 @@ const INTERESMENSUAL = 3;
 class Carrito{
     constructor(){
         this.productos = [];
+        this.cantidad = 0;
     }
     estaVacio(){
-        return this.productos.length === 0;
+        return this.cantidad === 0;
     }
     aniadirProducto(producto){
         this.productos.push(producto);
+        this.cantidad++;
+    }
+    eliminarProducto(producto){
+        for (let i = 0; i < this.productos.length; i++) {
+            if (this.productos[i].nombre === producto) {
+                this.productos[i].cantidad--;
+                this.cantidad--;
+                if (this.productos[i].cantidad === 0) {
+                    this.productos.splice(i,1)
+                }
+            }
+            
+        }
+
     }
     ordenarProductos(){
         let productosOrdenados = this.productos.sort((producto1,producto2) =>{
@@ -35,11 +50,12 @@ class Carrito{
 }
 class Producto{
 
-    constructor(nombre,precio,cantCuotas,imagen){
+    constructor(nombre,precio,cantCuotas,imagen,cantidad = 0){
         this.nombre = nombre;
         this.precio = Number(precio);
         this.cantCuotas = cantCuotas;
         this.imagen = imagen;
+        this.cantidad = cantidad;
     }
     calcularPrecioEnCuotas(){
         let interes = (this.precio * INTERESMENSUAL)/ 100;
@@ -63,21 +79,18 @@ const carrito = new Carrito();
 //Añade a una tabla el producto que se añadio al carrito
 function agregarCarrito(nombre){
     const producto = productos.find(producto => producto.nombre === nombre);
-    if(carrito.estaVacio()){
-        let tabla = ``;
-        tabla += `<tr>
-        <th>Nombre </th>
-        <th>Valor </th>
-    </tr>`;
-    document.getElementById("carrito").innerHTML += tabla;
+    //Si esta en carrito no vuelve a agregarlo 
+    let productoEncontrado = carrito.productos.find(e=> e.nombre === nombre);
+    if(productoEncontrado){
+        productoEncontrado.cantidad++;
+        carrito.cantidad++;
+        mostrarCarrito();
+        return;
     }
+    producto.cantidad++;
     carrito.aniadirProducto(producto);
-    let tabla = ``;
-    tabla += `<tr>
-    <td>${producto.nombre}</td>
-    <td>${producto.precio}</td>
-  </tr>`
-    document.getElementById("carrito").innerHTML += tabla;
+    mostrarCarrito();
+    
 }
 //Se crean los productos
 let acumulador = ``;
@@ -95,3 +108,38 @@ productos.forEach((producto)=>{
 </div>`
 })
 document.getElementById("listaProductos").innerHTML = acumulador;
+//Se encarga de mostrar el carrito en la web
+function mostrarCarrito(){
+    if(carrito.cantidad === 0){
+        document.getElementById("carrito").innerHTML = "";
+    }
+    let tabla = ``;
+    tabla += `<tr>
+    <th>Nombre </th>
+    <th>Precio (Pesos) </th>
+    <th>Cantidad </th>
+    <th>Subtotal</th>
+    <th></th>
+    </tr>`;
+    carrito.productos.forEach(producto => {
+    tabla += `<tr>
+    <td>${producto.nombre}</td>
+    <td>${producto.precio}</td>
+    <td>${producto.cantidad}</td>
+    <td>${producto.precio * producto.cantidad}</td>
+    <td>
+        <button class="btn" onclick="agregarCarrito('${producto.nombre}')">+</button>
+        <button class="btn" onclick="quitarCarrito('${producto.nombre}')">-</button>
+    </td>
+    
+  </tr>`
+        
+    document.getElementById("carrito").innerHTML = tabla;
+    
+    });
+    
+}
+function quitarCarrito(producto){
+    carrito.eliminarProducto(producto);
+    mostrarCarrito();
+}
