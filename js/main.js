@@ -75,13 +75,13 @@ class Producto{
 
 }
 //Creacion de los productos y del carrito
-const jujutsu = new Producto("Jujutsu Kaisen Volumen 1",500,1,"/img/jujutsu.webp");
-const haikyu = new Producto("Haikyu!! Volumen 1",500,1,"/img/haikyu.jpg");
-const jujutsu2 = new Producto("Jujutsu Kaisen Volumen 2",500,1,"/img/jujutsu2.png");
-const haikyu2 = new Producto("Haikyu!! Volumen 2",500,1,"/img/haikyu2.jpg");
-const jujutsu3 = new Producto("Jujutsu Kaisen Volumen 3",500,1,"/img/jujutsu3.jpg");
-const sincity = new Producto("Sin City Volumen 1",1000,1,"/img/sincity.jpg");
-const sincity2 = new Producto("Sin City Volumen 2",1000,1,"/img/sincity2.jpg");
+const jujutsu = new Producto("Jujutsu Kaisen Volumen 1",500,1,"img/jujutsu.webp");
+const haikyu = new Producto("Haikyu!! Volumen 1",500,1,"img/haikyu.jpg");
+const jujutsu2 = new Producto("Jujutsu Kaisen Volumen 2",500,1,"img/jujutsu2.png");
+const haikyu2 = new Producto("Haikyu!! Volumen 2",500,1,"img/haikyu2.jpg");
+const jujutsu3 = new Producto("Jujutsu Kaisen Volumen 3",500,1,"img/jujutsu3.jpg");
+const sincity = new Producto("Sin City Volumen 1",1000,1,"img/sincity.jpg");
+const sincity2 = new Producto("Sin City Volumen 2",1000,1,"img/sincity2.jpg");
 const metalgear =new Producto("Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
 const productos = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
 const carrito = new Carrito();
