@@ -89,20 +89,27 @@ const carrito = new Carrito();
 function agregarCarrito(nombre){
     const producto = productos.find(producto => producto.nombre === nombre);
     //Si esta en carrito no vuelve a agregarlo 
-    let productoEncontrado = carrito.productos.find(e=> e.nombre === nombre);
+    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    console.log(carritoAlmacenado)
+    let productoEncontrado = carritoAlmacenado.productos.find(e=> e.nombre === nombre);
     if(productoEncontrado){
         productoEncontrado.cantidad++;
-        carrito.cantidad++;
+        carritoAlmacenado.cantidad++;
+        sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
         mostrarCarrito();
         return;
     }
     producto.cantidad++;
-    carrito.aniadirProducto(producto);
+    carritoAlmacenado.aniadirProducto(producto);
+    sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
     mostrarCarrito();
     
 }
-function generarCards(){
-    //Se crean los productos
+function inicializar(){
+    //Se crean los productos y se verifica el storage
+    if(!sessionStorage.getItem("carrito")){
+        sessionStorage.setItem("carrito",JSON.stringify(carrito));
+    }
     let acumulador = ``;
     productos.forEach((producto)=>{
         acumulador += `<div class="col mb-5" id="${producto.nombre}">
@@ -124,8 +131,10 @@ function generarCards(){
 
 //Se encarga de mostrar el carrito en la web
 function mostrarCarrito(){
-    if(carrito.cantidad === 0){
+    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    if(carritoAlmacenado.cantidad === 0){
         document.getElementById("carrito").innerHTML = "";
+        return;
     }
     let tabla = ``;
     tabla += `<tr>
@@ -135,7 +144,7 @@ function mostrarCarrito(){
     <th>Subtotal</th>
     <th></th>
     </tr>`;
-    carrito.productos.forEach(producto => {
+    carritoAlmacenado.productos.forEach(producto => {
     tabla += `<tr>
     <td>${producto.nombre}</td>
     <td>${producto.precio}</td>
@@ -158,9 +167,10 @@ function mostrarCarrito(){
     generarModal();
 }
 function generarModal() {
+    let carritoAlmacenado = JSON.parse(sessionStorage.getItem("carrito"));
     let resumen = ``;
     let total = 0;
-    carrito.productos.forEach(producto => {
+    carritoAlmacenado.productos.forEach(producto => {
         resumen += `<tr>
         <td>${producto.nombre}</td>
         <td>${producto.cantidad}</td>
@@ -200,7 +210,10 @@ function generarModal() {
     </div>`;
 }
 function quitarCarrito(producto){
-    carrito.eliminarProducto(producto);
+    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    carritoAlmacenado.eliminarProducto(producto);
+    sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
     mostrarCarrito();
 }
-generarCards();
+inicializar();
+mostrarCarrito();
