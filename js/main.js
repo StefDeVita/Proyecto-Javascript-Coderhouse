@@ -53,7 +53,8 @@ class Carrito{
 }
 class Producto{
 
-    constructor(nombre,precio,cantCuotas,imagen,cantidad = 0){
+    constructor(id,nombre,precio,cantCuotas,imagen,cantidad = 0){
+        this.id = id;
         this.nombre = nombre;
         this.precio = Number(precio);
         this.cantCuotas = cantCuotas;
@@ -75,14 +76,14 @@ class Producto{
 
 }
 //Creacion de los productos y del carrito
-const jujutsu = new Producto("Jujutsu Kaisen Volumen 1",500,1,"img/jujutsu.webp");
-const haikyu = new Producto("Haikyu!! Volumen 1",500,1,"img/haikyu.jpg");
-const jujutsu2 = new Producto("Jujutsu Kaisen Volumen 2",500,1,"img/jujutsu2.png");
-const haikyu2 = new Producto("Haikyu!! Volumen 2",500,1,"img/haikyu2.jpg");
-const jujutsu3 = new Producto("Jujutsu Kaisen Volumen 3",500,1,"img/jujutsu3.jpg");
-const sincity = new Producto("Sin City Volumen 1",1000,1,"img/sincity.jpg");
-const sincity2 = new Producto("Sin City Volumen 2",1000,1,"img/sincity2.jpg");
-const metalgear =new Producto("Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
+const jujutsu = new Producto(0,"Jujutsu Kaisen Volumen 1",500,1,"img/jujutsu.webp");
+const haikyu = new Producto(1,"Haikyu!! Volumen 1",500,1,"img/haikyu.jpg");
+const jujutsu2 = new Producto(2,"Jujutsu Kaisen Volumen 2",500,1,"img/jujutsu2.png");
+const haikyu2 = new Producto(3,"Haikyu!! Volumen 2",500,1,"img/haikyu2.jpg");
+const jujutsu3 = new Producto(4,"Jujutsu Kaisen Volumen 3",500,1,"img/jujutsu3.jpg");
+const sincity = new Producto(5,"Sin City Volumen 1",1000,1,"img/sincity.jpg");
+const sincity2 = new Producto(6,"Sin City Volumen 2",1000,1,"img/sincity2.jpg");
+const metalgear =new Producto(7,"Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
 const productos = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
 const carrito = new Carrito();
 //Añade a una tabla el producto que se añadio al carrito
@@ -109,10 +110,10 @@ function inicializar(){
     //Se crean los productos y se verifica el storage
     if(!sessionStorage.getItem("carrito")){
         sessionStorage.setItem("carrito",JSON.stringify(carrito));
+        console.log(carrito)
     }
-    let acumulador = ``;
     productos.forEach((producto)=>{
-        acumulador += `<div class="col mb-5" id="${producto.nombre}">
+        $("#listaProductos").append(`<div class="col mb-5" id="${producto.nombre}">
         <div class="card">
         <img class="card-img-top img-fluid" src="${producto.imagen}" alt="${producto.nombre}">
         <div class="card-body">
@@ -121,13 +122,14 @@ function inicializar(){
         </div>
     
         <div class="card-body text-center">
-        <button class="btn" onclick="agregarCarrito('${producto.nombre}')">Agregar al carrito</button>
+        <button id="btn${producto.id}" class="btn">Agregar al carrito</button>
         </div>
     </div>
-    </div>`
-    })
-    document.getElementById("listaProductos").innerHTML = acumulador;
-}
+    </div>`);
+    $(`#btn${producto.id}`).click(()=>agregarCarrito(producto.nombre));
+    });
+
+    }
 
 //Se encarga de mostrar el carrito en la web
 function mostrarCarrito(){
@@ -157,11 +159,11 @@ function mostrarCarrito(){
     
   </tr>`
    
-    document.getElementById("carrito").innerHTML = tabla;
+    $("#carrito").html(tabla);
     
     });
-    document.getElementById("carrito").innerHTML+=`<tr>
-    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalcontenedor">
+    document.getElementById("carrito").innerHTML+=`
+    <button id="btn-confirm" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalcontenedor">
   Confirmar compra
 </button>`;
     generarModal();
@@ -178,7 +180,7 @@ function generarModal() {
     </tr>`
         total += producto.cantidad * producto.precio;
     });
-    document.getElementById("modalcontenedor").innerHTML = `
+    $("#modalcontenedor").html(`
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -207,7 +209,7 @@ function generarModal() {
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal"">Confirmar compra</button>
         </div>
       </div>
-    </div>`;
+    </div>`);
 }
 function quitarCarrito(producto){
     let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
