@@ -16,17 +16,20 @@ class Carrito{
         this.total += producto.precio;
     }
     eliminarProducto(producto){
+        const productoEncontrado = productosInicio.find(i => i.nombre === producto);
+
         for (let i = 0; i < this.productos.length; i++) {
             if (this.productos[i].nombre === producto) {
                 this.productos[i].cantidad--;
                 this.cantidad--;
                 if (this.productos[i].cantidad === 0) {
-                    this.productos.splice(i,1)
+                    this.productos.splice(i,1);
+                    productoEncontrado.cantidad--;
                 }
             }
             
         }
-        this.total = this.total - producto.precio;
+        this.total = this.total - productoEncontrado.precio;
     }
     ordenarProductos(){
         let productosOrdenados = this.productos.sort((producto1,producto2) =>{
@@ -84,35 +87,39 @@ const jujutsu3 = new Producto(4,"Jujutsu Kaisen Volumen 3",500,1,"img/jujutsu3.j
 const sincity = new Producto(5,"Sin City Volumen 1",1000,1,"img/sincity.jpg");
 const sincity2 = new Producto(6,"Sin City Volumen 2",1000,1,"img/sincity2.jpg");
 const metalgear =new Producto(7,"Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
-const productos = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
+const productosInicio = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
 const carrito = new Carrito();
 //Añade a una tabla el producto que se añadio al carrito
 function agregarCarrito(nombre){
-    const producto = productos.find(producto => producto.nombre === nombre);
+    const producto = productosInicio.find(producto => producto.nombre === nombre);
     //Si esta en carrito no vuelve a agregarlo 
-    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
-    console.log(carritoAlmacenado)
-    let productoEncontrado = carritoAlmacenado.productos.find(e=> e.nombre === nombre);
-    if(productoEncontrado){
+    const carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    const productoEncontrado = carritoAlmacenado.productos.find(e=> e.nombre === nombre);
+    productoEncontrado;
+    if(productoEncontrado !== undefined){
         productoEncontrado.cantidad++;
         carritoAlmacenado.cantidad++;
+        carritoAlmacenado.total += productoEncontrado.precio;
         sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
+        
         mostrarCarrito();
+        $("#carrito").get(0).scrollIntoView({behavior:"smooth"});
+        
         return;
     }
     producto.cantidad++;
     carritoAlmacenado.aniadirProducto(producto);
     sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
     mostrarCarrito();
+    $("#carrito").get(0).scrollIntoView({behavior:"smooth"});
     
 }
 function inicializar(){
     //Se crean los productos y se verifica el storage
     if(!sessionStorage.getItem("carrito")){
         sessionStorage.setItem("carrito",JSON.stringify(carrito));
-        console.log(carrito)
     }
-    productos.forEach((producto)=>{
+    productosInicio.forEach((producto)=>{
         $("#listaProductos").append(`<div class="col mb-5" id="${producto.nombre}">
         <div class="card">
         <img class="card-img-top img-fluid" src="${producto.imagen}" alt="${producto.nombre}">
@@ -126,14 +133,17 @@ function inicializar(){
         </div>
     </div>
     </div>`);
-    $(`#btn${producto.id}`).click(()=>agregarCarrito(producto.nombre));
+    $(`#btn${producto.id}`).click((e) => {
+        agregarCarrito(producto.nombre);
+        e.stopImmediatePropagation();
+    });
     });
 
     }
 
 //Se encarga de mostrar el carrito en la web
 function mostrarCarrito(){
-    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    const carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
     if(carritoAlmacenado.cantidad === 0){
         document.getElementById("carrito").innerHTML = "";
         return;
@@ -212,7 +222,7 @@ function generarModal() {
     </div>`);
 }
 function quitarCarrito(producto){
-    let carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    const carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
     carritoAlmacenado.eliminarProducto(producto);
     sessionStorage.setItem("carrito",JSON.stringify(carritoAlmacenado));
     mostrarCarrito();
