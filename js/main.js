@@ -119,6 +119,7 @@ function inicializar(){
     if(!sessionStorage.getItem("carrito")){
         sessionStorage.setItem("carrito",JSON.stringify(carrito));
     }
+    
     productosInicio.forEach((producto)=>{
         $("#listaProductos").append(`<div class="col mb-5" id="${producto.nombre}">
         <div class="card">
@@ -133,6 +134,11 @@ function inicializar(){
         </div>
     </div>
     </div>`);
+    $("#listaProductos").attr("style","opacity: 0.3 !important");
+    $("#footer").attr("style","opacity: 0.3 !important");
+
+    $("#listaProductos").animate({opacity:"1"},1000,()=>
+    {$("#footer").animate({opacity:"1"},2000)});
     $(`#btn${producto.id}`).click((e) => {
         agregarCarrito(producto.nombre);
         e.stopImmediatePropagation();
