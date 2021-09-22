@@ -78,6 +78,12 @@ class Producto{
     }
 
 }
+$.ajaxSetup({
+    headers:{
+        'Authorization': 'Bearer TEST-1558755914153302-092212-65878d523d5f96aa2061995fd798ea71-339404170',
+        'Content-Type': 'application/json'
+    }
+})
 //Creacion de los productos y del carrito
 const jujutsu = new Producto(0,"Jujutsu Kaisen Volumen 1",500,1,"img/jujutsu.webp");
 const haikyu = new Producto(1,"Haikyu!! Volumen 1",500,1,"img/haikyu.jpg");
@@ -89,6 +95,25 @@ const sincity2 = new Producto(6,"Sin City Volumen 2",1000,1,"img/sincity2.jpg");
 const metalgear =new Producto(7,"Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
 const productosInicio = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
 const carrito = new Carrito();
+function confirmarCompra(){
+    const carritoAlmacenado = Object.assign(Carrito.prototype,JSON.parse(sessionStorage.getItem("carrito")));
+    const elemento = { "items": []
+    }
+    carritoAlmacenado.productos.forEach(producto => {
+        elemento.items.push({
+            "title": producto.nombre,
+            "description":"descripcion",
+            "picture_url": producto.imagen,
+            "category_id":"1",
+            "quantity":producto.cantidad,
+            "currency_id":"ARS",
+            "unit_price":producto.precio
+        })
+    });
+    $.post("https://api.mercadopago.com/checkout/preferences",JSON.stringify(elemento),(respuesta,status)=>{
+        window.open(respuesta.init_point,"_blank").focus();
+    })
+}
 //Añade a una tabla el producto que se añadio al carrito
 function agregarCarrito(nombre){
     const producto = productosInicio.find(producto => producto.nombre === nombre);
@@ -222,7 +247,7 @@ function generarModal() {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"">Confirmar compra</button>
+          <button type="button" onclick="confirmarCompra()" class="btn btn-primary" data-bs-dismiss="modal"">Confirmar compra</button>
         </div>
       </div>
     </div>`);
