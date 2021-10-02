@@ -56,27 +56,14 @@ class Carrito{
 }
 class Producto{
 
-    constructor(id,nombre,precio,cantCuotas,imagen,cantidad = 0){
+    constructor(id,nombre,precio,imagen,cantidad = 0){
         this.id = id;
         this.nombre = nombre;
         this.precio = Number(precio);
-        this.cantCuotas = cantCuotas;
         this.imagen = imagen;
         this.cantidad = cantidad;
     }
-    calcularPrecioEnCuotas(){
-        let interes = (this.precio * INTERESMENSUAL)/ 100;
-        let interesTotal = interes * this.cantCuotas;
-        return (interesTotal + this.precio) / this.cantCuotas;
-    }
-    calcularPrecioFinal(){
-        return this.calcularPrecioEnCuotas() * this.cantCuotas;
-    }
-    costoFinancieroTotal(){
-        let precioTotalEnCuotas = this.calcularPrecioEnCuotas() * this.cantCuotas;
-        return (precioTotalEnCuotas - this.precio) * 100 / this.precio;
-    }
-
+    
 }
 $.ajaxSetup({
     headers:{
@@ -85,14 +72,14 @@ $.ajaxSetup({
     }
 })
 //Creacion de los productos y del carrito
-const jujutsu = new Producto(0,"Jujutsu Kaisen Volumen 1",500,1,"img/jujutsu.webp");
-const haikyu = new Producto(1,"Haikyu!! Volumen 1",500,1,"img/haikyu.jpg");
-const jujutsu2 = new Producto(2,"Jujutsu Kaisen Volumen 2",500,1,"img/jujutsu2.png");
-const haikyu2 = new Producto(3,"Haikyu!! Volumen 2",500,1,"img/haikyu2.jpg");
-const jujutsu3 = new Producto(4,"Jujutsu Kaisen Volumen 3",500,1,"img/jujutsu3.jpg");
-const sincity = new Producto(5,"Sin City Volumen 1",1000,1,"img/sincity.jpg");
-const sincity2 = new Producto(6,"Sin City Volumen 2",1000,1,"img/sincity2.jpg");
-const metalgear =new Producto(7,"Metal Gear Solid: Sons of Liberty 1",795,1,"img/metalgear.jpg");
+const jujutsu = new Producto(0,"Jujutsu Kaisen Volumen 1",500,"img/jujutsu.webp");
+const haikyu = new Producto(1,"Haikyu!! Volumen 1",500,"img/haikyu.jpg");
+const jujutsu2 = new Producto(2,"Jujutsu Kaisen Volumen 2",500,"img/jujutsu2.png");
+const haikyu2 = new Producto(3,"Haikyu!! Volumen 2",500,"img/haikyu2.jpg");
+const jujutsu3 = new Producto(4,"Jujutsu Kaisen Volumen 3",500,"img/jujutsu3.jpg");
+const sincity = new Producto(5,"Sin City Volumen 1",1000,"img/sincity.jpg");
+const sincity2 = new Producto(6,"Sin City Volumen 2",1000,"img/sincity2.jpg");
+const metalgear =new Producto(7,"Metal Gear Solid: Sons of Liberty 1",795,"img/metalgear.jpg");
 const productosInicio = [jujutsu,haikyu,sincity,metalgear,sincity2,jujutsu2,haikyu2,jujutsu3];
 const carrito = new Carrito();
 function confirmarCompra(){
