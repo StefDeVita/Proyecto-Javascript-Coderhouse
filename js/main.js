@@ -180,20 +180,23 @@ function mostrarCarrito(){
         return;
     }
     let tabla = ``;
-    tabla += `<tr>
-    <th>Nombre </th>
-    <th>Precio (Pesos) </th>
-    <th>Cantidad </th>
-    <th>Subtotal</th>
-    <th></th>
-    </tr>`;
+    tabla += `
+    <thead class="thead-dark">
+        <tr>
+        <th>Nombre </th>
+        <th>Precio (Pesos) </th>
+        <th>Cantidad </th>
+        <th>Subtotal</th>
+        <th></th>
+        </tr>
+    </thead>`;
     carritoAlmacenado.productos.forEach(producto => {
     tabla += `<tr>
     <td>${producto.nombre}</td>
     <td>${producto.precio}</td>
     <td>${producto.cantidad}</td>
     <td>${producto.precio * producto.cantidad}</td>
-    <td>
+    <td class="d-flex justify-content-around">
         <button class="btn" onclick="agregarCarrito('${producto.nombre}')">+</button>
         <button class="btn" onclick="quitarCarrito('${producto.nombre}')">-</button>
     </td>
